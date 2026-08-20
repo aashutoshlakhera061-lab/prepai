@@ -1,0 +1,32 @@
+# --- Secrets: NEVER commit these ---
+backend/.env
+frontend/.env.local
+*.env
+!*.env.example
+
+# --- Python ---
+backend/venv/
+backend/__pycache__/
+backend/**/__pycache__/
+*.pyc
+.pytest_cache/
+
+# --- Node ---
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# --- Local data (personal, not for git) ---
+backend/prepai.db
+backend/uploads/
+backend/test_uploads/
+backend/chroma_data/
+backend/.pytest_cache/
+backend/htmlcov/
+backend/.coverage
+
+# --- OS / editor junk ---
+.DS_Store
+Thumbs.db
+.vscode/
+*.swp
