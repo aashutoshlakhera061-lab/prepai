@@ -1,6 +1,6 @@
 # PrepAI — Adaptive AI Interview Preparation Platform
 
-[![CI](https://github.com/YOUR_USERNAME/prepai/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/prepai/actions/workflows/ci.yml)
+[![CI](https://github.com/aashutoshlakhera061-lab/prepai/actions/workflows/ci.yml/badge.svg)](https://github.com/aashutoshlakhera061-lab/prepai/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.12-blue)
 ![Next.js](https://img.shields.io/badge/next.js-14-black)
 ![License](https://img.shields.io/badge/license-MIT-green)
