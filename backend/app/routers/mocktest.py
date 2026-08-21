@@ -43,13 +43,13 @@ def generate_mock_test(payload: schemas.MockTestGenerateRequest, db: Session = D
         )[:3]
         weak_topics = [t for t, _ in weak_topics]
 
-    material = "\n\n".join(c.text for c in sorted(doc.chunks, key=lambda c: c.order_index))[:20000]
+    material = "\n\n".join(c.text for c in sorted(doc.chunks, key=lambda c: c.order_index))[:6000]
     focus_note = f"\n\nPrioritize extra questions on these weak topics if present in the material: {weak_topics}" if weak_topics else ""
     user_prompt = (
         f"Generate exactly {payload.num_questions} {payload.difficulty}-difficulty MCQs "
         f"from this material:{focus_note}\n\n{material}"
     )
-    questions = llm_service.generate_json(SYSTEM_PROMPT, user_prompt, max_tokens=3500)
+    questions = llm_service.generate_json(SYSTEM_PROMPT, user_prompt, max_tokens=3200)
 
     mock_test = models.MockTest(
         document_id=doc.id, subject=doc.subject, difficulty=payload.difficulty, questions=questions

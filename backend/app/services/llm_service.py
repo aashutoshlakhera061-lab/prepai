@@ -97,11 +97,37 @@ def generate_text(system: str, user_prompt: str, max_tokens: int = 1500) -> str:
     return resp.choices[0].message.content or ""
 
 
+# def generate_json(system: str, user_prompt: str, max_tokens: int = 2000):
+#     """Asks the model to respond with ONLY JSON, then parses it."""
+#     raw = generate_text(
+#         system=system + "\n\nRespond with ONLY valid JSON. No prose, no markdown fences.",
+#         user_prompt=user_prompt,
+#         max_tokens=max_tokens,
+#     )
+#     return _extract_json(raw)
 def generate_json(system: str, user_prompt: str, max_tokens: int = 2000):
     """Asks the model to respond with ONLY JSON, then parses it."""
+    from fastapi import HTTPException
+    import json as _json
+
     raw = generate_text(
         system=system + "\n\nRespond with ONLY valid JSON. No prose, no markdown fences.",
         user_prompt=user_prompt,
         max_tokens=max_tokens,
     )
-    return _extract_json(raw)
+    try:
+        return _extract_json(raw)
+    except _json.JSONDecodeError:
+        # Most common cause: the model's response got cut off mid-JSON
+        # because max_tokens ran out before it finished (e.g. too many
+        # questions/flashcards requested for the token budget). Rather
+        # than crash with a raw parser stack trace, tell the user what to try.
+        raise HTTPException(
+            status_code=502,
+            detail=(
+                "The AI's response wasn't valid JSON — this usually happens when "
+                "the response got cut off because too much content was requested "
+                "at once. Try again with fewer questions/flashcards, or a shorter "
+                "document."
+            ),
+        )

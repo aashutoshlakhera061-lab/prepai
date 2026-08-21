@@ -24,7 +24,7 @@ def _get_document_text(db: Session, document_id: int, owner_id: int) -> str:
     chunks = sorted(doc.chunks, key=lambda c: c.order_index)
     # Cap total context sent to the LLM to keep costs/latency sane.
     text = "\n\n".join(c.text for c in chunks)
-    return text[:20000]
+    return text[:8000]
 
 
 @router.post("/", response_model=schemas.SummaryResponse)

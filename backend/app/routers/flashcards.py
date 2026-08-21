@@ -22,9 +22,9 @@ def generate_flashcards(payload: schemas.FlashcardGenerateRequest, db: Session =
     if not doc:
         raise HTTPException(404, "Document not found")
 
-    material = "\n\n".join(c.text for c in sorted(doc.chunks, key=lambda c: c.order_index))[:20000]
+    material = "\n\n".join(c.text for c in sorted(doc.chunks, key=lambda c: c.order_index))[:8000]
     user_prompt = f"Generate exactly {payload.count} flashcards from this material:\n\n{material}"
-    cards = llm_service.generate_json(SYSTEM_PROMPT, user_prompt, max_tokens=3000)
+    cards = llm_service.generate_json(SYSTEM_PROMPT, user_prompt, max_tokens=2500)
 
     created = []
     for card in cards:
