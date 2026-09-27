@@ -41,7 +41,7 @@ export default function HomePage() {
         <input className="bg-gray-900 border border-gray-700 rounded px-3 py-2"
           placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         {error && <p className="text-red-400 text-sm">{error}</p>}
-        <button className="bg-indigo-600 hover:bg-indigo-500 rounded px-3 py-2 font-medium" type="submit">
+        <button className="bg-amber-500 text-black hover:bg-amber-400 rounded px-3 py-2 font-medium" type="submit">
           {mode === "login" ? "Log in" : "Create account"}
         </button>
       </form>

@@ -26,6 +26,16 @@ def get_dashboard(db: Session = Depends(get_db), current_user: models.User = Dep
 
     topic_scores = {t: round(sum(v) / len(v), 1) for t, v in topic_scores_all.items()}
 
+    materials_count = (
+        db.query(models.Document).filter(models.Document.owner_id == current_user.id).count()
+    )
+
+    flashcards_total = (
+        db.query(models.Flashcard)
+        .join(models.Document)
+        .filter(models.Document.owner_id == current_user.id)
+        .count()
+    )
     flashcards_reviewed = (
         db.query(models.Flashcard)
         .join(models.Document)
@@ -47,11 +57,38 @@ def get_dashboard(db: Session = Depends(get_db), current_user: models.User = Dep
 
     top_priority = min(topic_scores.items(), key=lambda x: x[1])[0] if topic_scores else None
 
+    recent_documents = (
+        db.query(models.Document)
+        .filter(models.Document.owner_id == current_user.id)
+        .order_by(models.Document.created_at.desc())
+        .limit(5)
+        .all()
+    )
+
+    recent_attempts_raw = (
+        db.query(models.MockTestAttempt, models.MockTest.subject)
+        .join(models.MockTest, models.MockTestAttempt.mock_test_id == models.MockTest.id)
+        .filter(models.MockTestAttempt.user_id == current_user.id)
+        .order_by(models.MockTestAttempt.created_at.desc())
+        .limit(5)
+        .all()
+    )
+    recent_attempts = [
+        schemas.RecentAttempt(
+            id=attempt.id, subject=subject, score_pct=attempt.score_pct, created_at=attempt.created_at
+        )
+        for attempt, subject in recent_attempts_raw
+    ]
+
     return schemas.DashboardOut(
         interview_readiness=readiness,
         topic_scores=topic_scores,
+        materials_count=materials_count,
         mock_tests_taken=len(attempts),
+        flashcards_total=flashcards_total,
         flashcards_reviewed=flashcards_reviewed,
         top_priority_topic=top_priority,
         accuracy_trend=accuracy_trend,
+        recent_documents=recent_documents,
+        recent_attempts=recent_attempts,
     )

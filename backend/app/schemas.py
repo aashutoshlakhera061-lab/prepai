@@ -117,13 +117,37 @@ class ChatResponse(BaseModel):
 
 
 # ---- Dashboard ----
+class RecentDocument(BaseModel):
+    id: int
+    filename: str
+    subject: str
+    created_at: datetime.datetime
+
+    class Config:
+        from_attributes = True
+
+
+class RecentAttempt(BaseModel):
+    id: int
+    subject: str
+    score_pct: float
+    created_at: datetime.datetime
+
+    class Config:
+        from_attributes = True
+
+
 class DashboardOut(BaseModel):
     interview_readiness: float
     topic_scores: Dict[str, float]
+    materials_count: int
     mock_tests_taken: int
+    flashcards_total: int
     flashcards_reviewed: int
     top_priority_topic: Optional[str]
     accuracy_trend: List[float]
+    recent_documents: List[RecentDocument]
+    recent_attempts: List[RecentAttempt]
 
 
 # ---- Mistakes ----

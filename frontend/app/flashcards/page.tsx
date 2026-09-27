@@ -70,7 +70,7 @@ export default function FlashcardsPage() {
       <div className="flex gap-2 mb-4 max-w-md">
         <input className="bg-gray-900 border border-gray-700 rounded px-3 py-2 flex-1"
           placeholder="Document ID (see Upload page)" value={documentId} onChange={(e) => setDocumentId(e.target.value)} />
-        <button className="bg-indigo-600 rounded px-3 py-2 disabled:opacity-50" onClick={generate} disabled={busy}>
+        <button className="bg-amber-500 text-black rounded px-3 py-2 disabled:opacity-50" onClick={generate} disabled={busy}>
           {busy ? "Working..." : "Generate"}
         </button>
         <button className="bg-gray-700 rounded px-3 py-2" onClick={loadDue}>Load due</button>
@@ -94,7 +94,7 @@ export default function FlashcardsPage() {
               </div>
             </>
           ) : (
-            <button className="bg-indigo-600 rounded px-3 py-2" onClick={() => setRevealed(true)}>Reveal answer</button>
+            <button className="bg-amber-500 text-black rounded px-3 py-2" onClick={() => setRevealed(true)}>Reveal answer</button>
           )}
         </div>
       ) : (

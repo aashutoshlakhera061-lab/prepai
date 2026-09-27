@@ -51,7 +51,7 @@ export default function UploadPage() {
         <input type="file" accept="application/pdf" onChange={(e) => setFile(e.target.files?.[0] || null)} />
         <input className="bg-gray-900 border border-gray-700 rounded px-3 py-2"
           placeholder="Subject (e.g. Java, DBMS)" value={subject} onChange={(e) => setSubject(e.target.value)} />
-        <button className="bg-indigo-600 hover:bg-indigo-500 rounded px-3 py-2 font-medium" type="submit" disabled={!file}>
+        <button className="bg-amber-500 text-black hover:bg-amber-400 rounded px-3 py-2 font-medium" type="submit" disabled={!file}>
           Upload PDF
         </button>
         <ErrorBanner message={error} />

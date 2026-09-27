@@ -51,7 +51,7 @@ export default function ChatPage() {
 
       <div className="flex flex-col gap-3 mb-4 max-w-2xl">
         {messages.map((m, i) => (
-          <div key={i} className={`rounded-lg p-3 ${m.role === "user" ? "bg-indigo-900 self-end" : "bg-gray-900"}`}>
+          <div key={i} className={`rounded-lg p-3 ${m.role === "user" ? "bg-amber-900/40 self-end" : "bg-gray-900"}`}>
             {m.role === "assistant" ? (
               <div className="prose prose-invert prose-sm max-w-none">
                 <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
@@ -71,7 +71,7 @@ export default function ChatPage() {
           placeholder="What should I study today?" value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && send()} />
-        <button className="bg-indigo-600 rounded px-3 py-2 disabled:opacity-50" onClick={send} disabled={loading}>
+        <button className="bg-amber-500 text-black rounded px-3 py-2 disabled:opacity-50" onClick={send} disabled={loading}>
           Send
         </button>
       </div>

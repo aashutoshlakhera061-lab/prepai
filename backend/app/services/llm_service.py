@@ -65,46 +65,57 @@ def _extract_json(text: str):
 
 
 def generate_text(system: str, user_prompt: str, max_tokens: int = 1500) -> str:
+    from fastapi import HTTPException
+
     provider = settings.llm_provider.lower()
     client = _get_client()
 
-    if provider == "anthropic":
-        resp = client.messages.create(
+    try:
+        if provider == "anthropic":
+            resp = client.messages.create(
+                model=settings.llm_model,
+                max_tokens=max_tokens,
+                system=system,
+                messages=[{"role": "user", "content": user_prompt}],
+            )
+            return "".join(block.text for block in resp.content if block.type == "text")
+
+        # groq and openrouter both speak the OpenAI chat.completions shape
+        extra_headers = {}
+        if provider == "openrouter":
+            if settings.openrouter_site_url:
+                extra_headers["HTTP-Referer"] = settings.openrouter_site_url
+            if settings.openrouter_app_name:
+                extra_headers["X-Title"] = settings.openrouter_app_name
+
+        resp = client.chat.completions.create(
             model=settings.llm_model,
             max_tokens=max_tokens,
-            system=system,
-            messages=[{"role": "user", "content": user_prompt}],
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": user_prompt},
+            ],
+            extra_headers=extra_headers or None,
         )
-        return "".join(block.text for block in resp.content if block.type == "text")
+        return resp.choices[0].message.content or ""
 
-    # groq and openrouter both speak the OpenAI chat.completions shape
-    extra_headers = {}
-    if provider == "openrouter":
-        if settings.openrouter_site_url:
-            extra_headers["HTTP-Referer"] = settings.openrouter_site_url
-        if settings.openrouter_app_name:
-            extra_headers["X-Title"] = settings.openrouter_app_name
-
-    resp = client.chat.completions.create(
-        model=settings.llm_model,
-        max_tokens=max_tokens,
-        messages=[
-            {"role": "system", "content": system},
-            {"role": "user", "content": user_prompt},
-        ],
-        extra_headers=extra_headers or None,
-    )
-    return resp.choices[0].message.content or ""
+    except Exception as e:
+        # Translate provider rate-limit errors into a clean message instead
+        # of a raw stack trace / API error dump reaching the user.
+        msg = str(e).lower()
+        if "rate_limit" in msg or "429" in msg or "413" in msg or "tokens per minute" in msg:
+            raise HTTPException(
+                status_code=429,
+                detail=(
+                    f"The {provider} API rate limit was hit for this request "
+                    "(this document/request may be too large for the free tier). "
+                    "Try again with fewer questions/flashcards, a shorter document, "
+                    "or wait about a minute and retry."
+                ),
+            )
+        raise
 
 
-# def generate_json(system: str, user_prompt: str, max_tokens: int = 2000):
-#     """Asks the model to respond with ONLY JSON, then parses it."""
-#     raw = generate_text(
-#         system=system + "\n\nRespond with ONLY valid JSON. No prose, no markdown fences.",
-#         user_prompt=user_prompt,
-#         max_tokens=max_tokens,
-#     )
-#     return _extract_json(raw)
 def generate_json(system: str, user_prompt: str, max_tokens: int = 2000):
     """Asks the model to respond with ONLY JSON, then parses it."""
     from fastapi import HTTPException

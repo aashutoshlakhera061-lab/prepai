@@ -72,7 +72,7 @@ export default function MockTestPage() {
           </select>
           <input type="number" className="bg-gray-900 border border-gray-700 rounded px-3 py-2"
             value={numQuestions} onChange={(e) => setNumQuestions(Number(e.target.value))} />
-          <button className="bg-indigo-600 rounded px-3 py-2 disabled:opacity-50" onClick={generate} disabled={loading}>
+          <button className="bg-amber-500 text-black rounded px-3 py-2 disabled:opacity-50" onClick={generate} disabled={loading}>
             {loading ? "Generating..." : "Generate mock test"}
           </button>
         </div>
