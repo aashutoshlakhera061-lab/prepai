@@ -46,7 +46,7 @@ app = FastAPI(title="PrepAI API", version="0.1.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001"],  # add your deployed frontend URL here too
+    allow_origins=["http://localhost:3000", "http://localhost:3001", "https://prepai-green.vercel.app"],  # add your deployed frontend URL here too
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
