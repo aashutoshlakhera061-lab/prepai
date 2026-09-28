@@ -9,6 +9,7 @@ export default function HomePage() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
@@ -38,8 +39,15 @@ export default function HomePage() {
         )}
         <input className="bg-gray-900 border border-gray-700 rounded px-3 py-2"
           placeholder="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <input className="bg-gray-900 border border-gray-700 rounded px-3 py-2"
-          placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+               <div className="relative">
+          <input className="bg-gray-900 border border-gray-700 rounded px-3 py-2 w-full pr-16"
+            placeholder="Password" type={showPassword ? "text" : "password"} value={password}
+            onChange={(e) => setPassword(e.target.value)} required />
+          <button type="button" onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 hover:text-gray-200">
+            {showPassword ? "Hide" : "Show"}
+          </button>
+        </div>
         {error && <p className="text-red-400 text-sm">{error}</p>}
         <button className="bg-amber-500 text-black hover:bg-amber-400 rounded px-3 py-2 font-medium" type="submit">
           {mode === "login" ? "Log in" : "Create account"}
